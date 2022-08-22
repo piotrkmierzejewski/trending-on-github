@@ -2,8 +2,16 @@ import Head from 'next/head'
 import Image from 'next/image'
 
 import styles from '@/pages/index.module.css'
+import { subtractDays } from 'helpers/subtractDays'
 
-export default function Home() {
+type Repo = {
+  url: string
+  fullName: string
+  description: string
+  starsCount: number
+}
+
+export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
   return (
     <div className={styles.container}>
       <Head>
@@ -62,4 +70,28 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+export async function getServerSideProps() {
+  const createdAt = subtractDays(new Date(), 7).toISOString().split('T')[0]
+  console.log({ createdAt })
+  const trendingRequest = await fetch(
+    `https://api.github.com/search/repositories?q=created:>${createdAt}&sort=stars&order=desc&per_page=20`
+  )
+
+  const trendingRepos = (await trendingRequest.json()).items.map(
+    (trendingRepo: any): Repo => ({
+      url: trendingRepo.html_url,
+      fullName: trendingRepo.full_name,
+      description: trendingRepo.description,
+      starsCount: trendingRepo.stargazers_count,
+    })
+  )
+  console.log({ trendingRepos })
+
+  return {
+    props: {
+      trendingRepos,
+    },
+  }
 }
