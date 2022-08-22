@@ -5,10 +5,19 @@ import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { Repo } from 'types/Repo'
+import Grid from '@mui/material/Grid'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
+import StarRateIcon from '@mui/icons-material/StarRate'
+import IconButton from '@mui/material/IconButton'
 
-export type RepoCardProps = Omit<Repo, 'id'>
+export type RepoCardProps = Omit<Repo, 'id'> & {
+  isFavorite: boolean
+  onFavoriteClicked: () => void
+}
 
 export function RepoCard({
+  isFavorite,
+  onFavoriteClicked,
   url,
   fullName,
   description,
@@ -17,15 +26,29 @@ export function RepoCard({
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
-        <Typography
-          variant="h5"
-          component="div"
-          style={{
-            wordWrap: 'break-word',
-          }}
-        >
-          {fullName}
-        </Typography>
+        <Grid container alignItems="center">
+          <Grid item xs>
+            <Typography
+              variant="h5"
+              component="div"
+              style={{
+                wordWrap: 'break-word',
+              }}
+            >
+              {fullName}
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            <IconButton data-testid={'favoriteBtn'} onClick={onFavoriteClicked}>
+              {isFavorite ? (
+                <StarRateIcon data-testid={'starIcon'} />
+              ) : (
+                <StarOutlineIcon data-testid={'starOutline'} />
+              )}
+            </IconButton>
+          </Grid>
+        </Grid>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           {starsCount} stars
         </Typography>
