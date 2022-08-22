@@ -17,7 +17,13 @@ export function RepoCard({
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
-        <Typography variant="h5" component="div">
+        <Typography
+          variant="h5"
+          component="div"
+          style={{
+            wordWrap: 'break-word',
+          }}
+        >
           {fullName}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
