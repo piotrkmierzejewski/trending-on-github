@@ -6,7 +6,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { Repo } from 'types/Repo'
 
-export type RepoCardProps = Repo
+export type RepoCardProps = Omit<Repo, 'id'>
 
 export function RepoCard({
   url,
