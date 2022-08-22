@@ -1,5 +1,8 @@
 {
   "extends": ["next/core-web-vitals", "prettier"],
+  "rules": {
+    "no-console": "error"
+  },
   "overrides": [
     // Only uses Testing Library lint rules in test files
     {

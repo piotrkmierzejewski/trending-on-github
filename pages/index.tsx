@@ -9,8 +9,6 @@ export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
   const { appendFavoriteRepo, removeFavoriteRepo, checkIsFavoriteRepo } =
     useFavoriteRepos()
 
-  console.log(favoriteRepos)
-
   return (
     <Container maxWidth="lg" sx={{ my: 10 }}>
       <Masonry columns={{ xs: 1, md: 3 }} spacing={2}>
@@ -49,7 +47,6 @@ export async function getServerSideProps() {
       starsCount: trendingRepo.stargazers_count,
     })
   )
-  console.log({ trendingRepos })
 
   return {
     props: {
