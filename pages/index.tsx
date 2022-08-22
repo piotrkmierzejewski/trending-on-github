@@ -1,32 +1,60 @@
 import { subtractDays } from 'helpers/subtractDays'
 import { Repo } from 'types/Repo'
-import { Container } from '@mui/material'
+import Container from '@mui/material/Container'
+import Switch from '@mui/material/Switch'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import Masonry from '@mui/lab/Masonry'
 import { RepoCard } from '@/components/RepoCard/RepoCard'
 import { useFavoriteRepos } from 'hooks/useFavoriteRepos'
+import { useState } from 'react'
+
+const label = { inputProps: { 'aria-label': 'Show only favorites' } }
 
 export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
-  const { appendFavoriteRepo, removeFavoriteRepo, checkIsFavoriteRepo } =
-    useFavoriteRepos()
+  const {
+    favoriteRepos,
+    appendFavoriteRepo,
+    removeFavoriteRepo,
+    checkIsFavoriteRepo,
+  } = useFavoriteRepos()
+
+  const [isShowingFavorites, setIsShowingFavorites] = useState(false)
 
   return (
     <Container maxWidth="lg" sx={{ my: 10 }}>
-      <Masonry columns={{ xs: 1, md: 3 }} spacing={2}>
-        {trendingRepos.map(({ id, ...repo }) => {
-          const isFavorite = checkIsFavoriteRepo(id)
-          return (
-            <RepoCard
-              key={id}
-              {...repo}
-              isFavorite={isFavorite}
-              onFavoriteClicked={() => {
-                isFavorite
-                  ? removeFavoriteRepo(id)
-                  : appendFavoriteRepo({ id, ...repo })
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isShowingFavorites}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setIsShowingFavorites(event.target.checked)
               }}
             />
-          )
-        })}
+          }
+          label="Show only favorites"
+        />
+      </FormGroup>
+
+      <Masonry columns={{ xs: 1, md: 3 }} spacing={2}>
+        {(isShowingFavorites ? favoriteRepos : trendingRepos).map(
+          ({ id, ...repo }) => {
+            const isFavorite = checkIsFavoriteRepo(id)
+            return (
+              <RepoCard
+                key={id}
+                {...repo}
+                isFavorite={isFavorite}
+                onFavoriteClicked={() => {
+                  isFavorite
+                    ? removeFavoriteRepo(id)
+                    : appendFavoriteRepo({ id, ...repo })
+                }}
+              />
+            )
+          }
+        )}
       </Masonry>
     </Container>
   )
