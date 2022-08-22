@@ -1,16 +1,34 @@
 import { subtractDays } from 'helpers/subtractDays'
 import { Repo } from 'types/Repo'
-import { Container, Grid } from '@mui/material'
+import { Container } from '@mui/material'
 import Masonry from '@mui/lab/Masonry'
 import { RepoCard } from '@/components/RepoCard/RepoCard'
+import { useFavoriteRepos } from 'hooks/useFavoriteRepos'
 
 export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
+  const { appendFavoriteRepo, removeFavoriteRepo, checkIsFavoriteRepo } =
+    useFavoriteRepos()
+
+  console.log(favoriteRepos)
+
   return (
     <Container maxWidth="lg" sx={{ my: 10 }}>
       <Masonry columns={{ xs: 1, md: 3 }} spacing={2}>
-        {trendingRepos.map(({ id, ...repo }) => (
-          <RepoCard key={id} {...repo} />
-        ))}
+        {trendingRepos.map(({ id, ...repo }) => {
+          const isFavorite = checkIsFavoriteRepo(id)
+          return (
+            <RepoCard
+              key={id}
+              {...repo}
+              isFavorite={isFavorite}
+              onFavoriteClicked={() => {
+                isFavorite
+                  ? removeFavoriteRepo(id)
+                  : appendFavoriteRepo({ id, ...repo })
+              }}
+            />
+          )
+        })}
       </Masonry>
     </Container>
   )
