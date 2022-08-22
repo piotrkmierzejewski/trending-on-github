@@ -3,13 +3,7 @@ import Image from 'next/image'
 
 import styles from '@/pages/index.module.css'
 import { subtractDays } from 'helpers/subtractDays'
-
-type Repo = {
-  url: string
-  fullName: string
-  description: string
-  starsCount: number
-}
+import { Repo } from 'types/Repo'
 
 export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
   return (
