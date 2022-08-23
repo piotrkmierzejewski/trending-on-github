@@ -1,29 +1,27 @@
-# Next.js + Jest
+# Project
 
-This example shows how to configure Jest to work with Next.js.
+This is a simple GitHub trending repos browser.
 
-This includes Next.js' built-in support for Global CSS, CSS Modules and TypeScript.
+Live on Vercel: https://trending-on-github.vercel.app/
 
-## How to Use
+## Stack
 
-Quickly get started using [Create Next App](https://github.com/vercel/next.js/tree/canary/packages/create-next-app#readme)!
+- Next.js
+- [MUI](https://mui.com/)
+- Storybook
+- Vercel
 
-In your terminal, run the following command:
+## Development
 
-```bash
-npx create-next-app --example with-jest with-jest-app
-```
+1. Clone the repo
+2. Run `yarn` to install dependencies
+3. Run `yarn dev` to start development server
+4. Run `yarn storybook` to start Storybook
 
-```bash
-yarn create next-app --example with-jest with-jest-app
-```
+## Tests
 
-```bash
-pnpm create next-app --example with-jest with-jest-app
-```
+Run `yarn test` to run unit tests.
 
-## Run Jest Tests
+## Other
 
-```bash
-npm test
-```
+The repo contains VS Code configuration to format the code automatically upon saving files. Manual prettier checks and fixes are availble under `yarn prettier` and `yarn prettier:fix` commands respectively.
