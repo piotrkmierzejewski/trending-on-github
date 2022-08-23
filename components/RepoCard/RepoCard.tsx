@@ -24,11 +24,12 @@ export function RepoCard({
   starsCount,
 }: RepoCardProps) {
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card sx={{ minWidth: 275 }} data-testid="repoCard">
       <CardContent>
         <Grid container alignItems="center">
           <Grid item xs>
             <Typography
+              data-testid="repoCard-fullname"
               variant="h5"
               component="div"
               style={{

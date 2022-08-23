@@ -27,6 +27,7 @@ export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
         <FormControlLabel
           control={
             <Switch
+              data-testid="favoritesSwitch"
               checked={isShowingFavorites}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setIsShowingFavorites(event.target.checked)

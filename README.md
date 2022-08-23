@@ -20,7 +20,8 @@ Live on Vercel: https://trending-on-github.vercel.app/
 
 ## Tests
 
-Run `yarn test` to run unit tests.
+- `yarn test` and `yarn test:ci` – run unit tests
+- `yarn cypress` and `yarn cypress:ci` – run e2e tests
 
 ## Other
 
