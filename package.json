@@ -12,7 +12,8 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "cypress": "cypress open",
-    "cypress:ci": "cypress run"
+    "cypress:ci": "cypress run",
+    "test:all": "tsc && npm run lint && npm run test:ci && npm run cypress:ci"
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",
