@@ -8,18 +8,36 @@ import Masonry from '@mui/lab/Masonry'
 import { RepoCard } from '@/components/RepoCard/RepoCard'
 import { useFavoriteRepos } from 'hooks/useFavoriteRepos'
 import { useState } from 'react'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
 
-const label = { inputProps: { 'aria-label': 'Show only favorites' } }
-
-export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
+export default function Home({
+  perPage,
+  trendingRepos,
+}: {
+  perPage: string
+  trendingRepos: Repo[]
+}) {
   const {
     favoriteRepos,
     appendFavoriteRepo,
     removeFavoriteRepo,
     checkIsFavoriteRepo,
   } = useFavoriteRepos()
-
+  const router = useRouter()
   const [isShowingFavorites, setIsShowingFavorites] = useState(false)
+  const [selectedPerPage, setSelectedPerPage] = useState(perPage)
+
+  const handleChange = (e: SelectChangeEvent) => {
+    setSelectedPerPage(e.target.value)
+    router.replace({
+      query: { ...router.query, perPage: e.target.value },
+    })
+  }
 
   return (
     <Container maxWidth="lg" sx={{ my: 10 }}>
@@ -37,6 +55,25 @@ export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
           label="Show only favorites"
         />
       </FormGroup>
+
+      <FormControl fullWidth>
+        <InputLabel id="per-page-select">Per page</InputLabel>
+        <Select
+          labelId="per-page-select"
+          id="per-page-select"
+          value={selectedPerPage}
+          label="Per page"
+          onChange={handleChange}
+        >
+          {Array.from(Array(10).keys())
+            .map((key) => (key + 1) * 10)
+            .map((value) => (
+              <MenuItem key={value} value={String(value)}>
+                {value}
+              </MenuItem>
+            ))}
+        </Select>
+      </FormControl>
 
       <Masonry columns={{ xs: 1, md: 3 }} spacing={2}>
         {(isShowingFavorites ? favoriteRepos : trendingRepos).map(
@@ -61,25 +98,26 @@ export default function Home({ trendingRepos }: { trendingRepos: Repo[] }) {
   )
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const perPage = context.query.perPage || '20'
   const createdAt = subtractDays(new Date(), 7).toISOString().split('T')[0]
   const trendingRequest = await fetch(
-    `https://api.github.com/search/repositories?q=created:>${createdAt}&sort=stars&order=desc&per_page=20`
+    `https://api.github.com/search/repositories?q=created:>${createdAt}&sort=stars&order=desc&per_page=${perPage}`
   )
-
-  const trendingRepos = (await trendingRequest.json()).items.map(
-    (trendingRepo: any): Repo => ({
-      id: trendingRepo.id,
-      url: trendingRepo.html_url,
-      fullName: trendingRepo.full_name,
-      description: trendingRepo.description,
-      starsCount: trendingRepo.stargazers_count,
-    })
-  )
+  const repos = await trendingRequest.json()
 
   return {
     props: {
-      trendingRepos,
+      perPage,
+      trendingRepos: repos.items.map(
+        (trendingRepo: any): Repo => ({
+          id: trendingRepo.id,
+          url: trendingRepo.html_url,
+          fullName: trendingRepo.full_name,
+          description: trendingRepo.description,
+          starsCount: trendingRepo.stargazers_count,
+        })
+      ),
     },
   }
 }
