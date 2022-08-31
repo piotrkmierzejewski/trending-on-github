@@ -13,6 +13,7 @@ import InputLabel from '@mui/material/InputLabel'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 
 const ALL_LANGUAGES = 'all-languages'
@@ -70,6 +71,9 @@ export default function Home({
 
   return (
     <Container maxWidth="lg" sx={{ my: 10 }}>
+      <Head>
+        <title>Trending on GitHub</title>
+      </Head>
       <FormGroup row>
         <FormControlLabel
           control={
@@ -85,9 +89,9 @@ export default function Home({
         />
 
         <FormControl sx={{ mb: 2, mr: 2, minWidth: 80 }}>
-          <InputLabel id="per-page-select">Per page</InputLabel>
+          <InputLabel id="per-page-select-label">Per page</InputLabel>
           <Select
-            labelId="per-page-select"
+            labelId="per-page-select-label"
             id="per-page-select"
             value={selectedPerPage}
             label="Per page"
@@ -104,9 +108,9 @@ export default function Home({
         </FormControl>
 
         <FormControl>
-          <InputLabel id="language-select">Language</InputLabel>
+          <InputLabel id="language-select-label">Language</InputLabel>
           <Select
-            labelId="language-select"
+            labelId="language-select-label"
             id="language-select"
             value={selectedLanguage}
             label="Language"

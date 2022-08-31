@@ -41,7 +41,13 @@ export function RepoCard({
           </Grid>
 
           <Grid item>
-            <IconButton data-testid={'favoriteBtn'} onClick={onFavoriteClicked}>
+            <IconButton
+              data-testid={'favoriteBtn'}
+              onClick={onFavoriteClicked}
+              aria-label={
+                isFavorite ? 'Add to favorites' : 'Remove from favorites'
+              }
+            >
               {isFavorite ? (
                 <StarRateIcon data-testid={'starIcon'} />
               ) : (
