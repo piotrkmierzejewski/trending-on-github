@@ -20,9 +20,11 @@ const ALL_LANGUAGES = 'all-languages'
 
 export default function Home({
   perPage,
+  ordering,
   trendingRepos,
 }: {
   perPage: string
+  ordering: string
   trendingRepos: Repo[]
 }) {
   const {
@@ -33,6 +35,7 @@ export default function Home({
   } = useFavoriteRepos()
   const router = useRouter()
   const [isShowingFavorites, setIsShowingFavorites] = useState(false)
+  const [selectedOrdering, setSelectedOrdering] = useState(ordering)
   const [selectedPerPage, setSelectedPerPage] = useState(perPage)
   const [selectedLanguage, setSelectedLanguage] = useState('all-languages')
   const languages = [
@@ -57,6 +60,14 @@ export default function Home({
 
   const handleLanguageChange = (e: SelectChangeEvent) => {
     setSelectedLanguage(e.target.value)
+  }
+
+  const handleOrderingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newOrdering = event.target.checked ? 'desc' : 'asc'
+    setSelectedOrdering(newOrdering)
+    router.replace({
+      query: { ...router.query, ordering: newOrdering },
+    })
   }
 
   let reposToRender = trendingRepos
@@ -86,6 +97,15 @@ export default function Home({
             />
           }
           label="Show only favorites"
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={selectedOrdering === 'desc'}
+              onChange={handleOrderingChange}
+            />
+          }
+          label="DESC"
         />
 
         <FormControl sx={{ mb: 2, mr: 2, minWidth: 80 }}>
@@ -148,15 +168,17 @@ export default function Home({
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const perPage = context.query.perPage || '20'
+  const ordering = context.query.ordering || 'desc'
   const createdAt = subtractDays(new Date(), 7).toISOString().split('T')[0]
   const trendingRequest = await fetch(
-    `https://api.github.com/search/repositories?q=created:>${createdAt}&sort=stars&order=desc&per_page=${perPage}`
+    `https://api.github.com/search/repositories?q=created:>${createdAt}&sort=stars&order=${ordering}&per_page=${perPage}`
   )
   const repos = await trendingRequest.json()
 
   return {
     props: {
       perPage,
+      ordering,
       trendingRepos: repos.items.map(
         (trendingRepo: any): Repo => ({
           id: trendingRepo.id,
