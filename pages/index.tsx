@@ -70,7 +70,7 @@ export default function Home({
 
   return (
     <Container maxWidth="lg" sx={{ my: 10 }}>
-      <FormGroup>
+      <FormGroup row>
         <FormControlLabel
           control={
             <Switch
@@ -83,43 +83,43 @@ export default function Home({
           }
           label="Show only favorites"
         />
-      </FormGroup>
 
-      <FormControl sx={{ mb: 2, mr: 2, minWidth: 80 }}>
-        <InputLabel id="per-page-select">Per page</InputLabel>
-        <Select
-          labelId="per-page-select"
-          id="per-page-select"
-          value={selectedPerPage}
-          label="Per page"
-          onChange={handleChange}
-        >
-          {Array.from(Array(10).keys())
-            .map((key) => (key + 1) * 10)
-            .map((value) => (
+        <FormControl sx={{ mb: 2, mr: 2, minWidth: 80 }}>
+          <InputLabel id="per-page-select">Per page</InputLabel>
+          <Select
+            labelId="per-page-select"
+            id="per-page-select"
+            value={selectedPerPage}
+            label="Per page"
+            onChange={handleChange}
+          >
+            {Array.from(Array(10).keys())
+              .map((key) => (key + 1) * 10)
+              .map((value) => (
+                <MenuItem key={value} value={String(value)}>
+                  {value}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
+
+        <FormControl>
+          <InputLabel id="language-select">Language</InputLabel>
+          <Select
+            labelId="language-select"
+            id="language-select"
+            value={selectedLanguage}
+            label="Language"
+            onChange={handleLanguageChange}
+          >
+            {languages.map(({ value, label }) => (
               <MenuItem key={value} value={String(value)}>
-                {value}
+                {label}
               </MenuItem>
             ))}
-        </Select>
-      </FormControl>
-
-      <FormControl>
-        <InputLabel id="language-select">Language</InputLabel>
-        <Select
-          labelId="language-select"
-          id="language-select"
-          value={selectedLanguage}
-          label="Language"
-          onChange={handleLanguageChange}
-        >
-          {languages.map(({ value, label }) => (
-            <MenuItem key={value} value={String(value)}>
-              {label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+          </Select>
+        </FormControl>
+      </FormGroup>
 
       <Masonry columns={{ xs: 1, md: 3 }} spacing={2}>
         {reposToRender.map(({ id, ...repo }) => {
