@@ -2,6 +2,13 @@ import * as React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import createEmotionServer from '@emotion/server/create-instance'
 import createEmotionCache from '../helpers/createEmotionCache'
+import {
+  AppContextType,
+  AppInitialProps,
+  AppPropsType,
+  AppType,
+} from 'next/dist/shared/lib/utils'
+import { EmotionCache } from '@emotion/react'
 
 export default class MyDocument extends Document<{
   emotionStyleTags: React.ReactNode
@@ -27,9 +34,11 @@ MyDocument.getInitialProps = async (ctx) => {
 
   ctx.renderPage = () =>
     originalRenderPage({
-      enhanceApp: (App) =>
+      enhanceApp: (
+        App: AppType | React.ComponentType<{ emotionCache: EmotionCache }>
+      ) =>
         function EnhanceApp(props) {
-          return <App {...props} />
+          return <App emotionCache={cache} {...props} />
         },
     })
 
