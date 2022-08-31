@@ -4,4 +4,5 @@ export type Repo = {
   fullName: string
   description: string
   starsCount: number
+  language: string
 }

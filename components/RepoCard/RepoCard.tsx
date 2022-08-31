@@ -10,7 +10,7 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import StarRateIcon from '@mui/icons-material/StarRate'
 import IconButton from '@mui/material/IconButton'
 
-export type RepoCardProps = Omit<Repo, 'id'> & {
+export type RepoCardProps = Omit<Omit<Repo, 'id'>, 'language'> & {
   isFavorite: boolean
   onFavoriteClicked: () => void
 }

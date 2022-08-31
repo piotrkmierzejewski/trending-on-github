@@ -15,6 +15,8 @@ import MenuItem from '@mui/material/MenuItem'
 import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next'
 
+const ALL_LANGUAGES = 'all-languages'
+
 export default function Home({
   perPage,
   trendingRepos,
@@ -31,12 +33,39 @@ export default function Home({
   const router = useRouter()
   const [isShowingFavorites, setIsShowingFavorites] = useState(false)
   const [selectedPerPage, setSelectedPerPage] = useState(perPage)
+  const [selectedLanguage, setSelectedLanguage] = useState('all-languages')
+  const languages = [
+    {
+      value: ALL_LANGUAGES,
+      label: 'All languages',
+    },
+    ...Array.from(
+      new Set(trendingRepos.map((repo) => repo.language).filter(Boolean))
+    ).map((language) => ({
+      value: language,
+      label: language,
+    })),
+  ]
 
   const handleChange = (e: SelectChangeEvent) => {
     setSelectedPerPage(e.target.value)
     router.replace({
       query: { ...router.query, perPage: e.target.value },
     })
+  }
+
+  const handleLanguageChange = (e: SelectChangeEvent) => {
+    setSelectedLanguage(e.target.value)
+  }
+
+  let reposToRender = trendingRepos
+  if (isShowingFavorites) {
+    reposToRender = favoriteRepos
+  }
+  if (selectedLanguage !== ALL_LANGUAGES) {
+    reposToRender = reposToRender.filter(
+      (repo) => repo.language === selectedLanguage
+    )
   }
 
   return (
@@ -56,7 +85,7 @@ export default function Home({
         />
       </FormGroup>
 
-      <FormControl fullWidth>
+      <FormControl sx={{ mb: 2, mr: 2, minWidth: 80 }}>
         <InputLabel id="per-page-select">Per page</InputLabel>
         <Select
           labelId="per-page-select"
@@ -75,24 +104,39 @@ export default function Home({
         </Select>
       </FormControl>
 
+      <FormControl>
+        <InputLabel id="language-select">Language</InputLabel>
+        <Select
+          labelId="language-select"
+          id="language-select"
+          value={selectedLanguage}
+          label="Language"
+          onChange={handleLanguageChange}
+        >
+          {languages.map(({ value, label }) => (
+            <MenuItem key={value} value={String(value)}>
+              {label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
       <Masonry columns={{ xs: 1, md: 3 }} spacing={2}>
-        {(isShowingFavorites ? favoriteRepos : trendingRepos).map(
-          ({ id, ...repo }) => {
-            const isFavorite = checkIsFavoriteRepo(id)
-            return (
-              <RepoCard
-                key={id}
-                {...repo}
-                isFavorite={isFavorite}
-                onFavoriteClicked={() => {
-                  isFavorite
-                    ? removeFavoriteRepo(id)
-                    : appendFavoriteRepo({ id, ...repo })
-                }}
-              />
-            )
-          }
-        )}
+        {reposToRender.map(({ id, ...repo }) => {
+          const isFavorite = checkIsFavoriteRepo(id)
+          return (
+            <RepoCard
+              key={id}
+              {...repo}
+              isFavorite={isFavorite}
+              onFavoriteClicked={() => {
+                isFavorite
+                  ? removeFavoriteRepo(id)
+                  : appendFavoriteRepo({ id, ...repo })
+              }}
+            />
+          )
+        })}
       </Masonry>
     </Container>
   )
@@ -116,6 +160,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           fullName: trendingRepo.full_name,
           description: trendingRepo.description,
           starsCount: trendingRepo.stargazers_count,
+          language: trendingRepo.language,
         })
       ),
     },

@@ -8,6 +8,7 @@ const sampleRepo: Repo = {
   fullName: 'sample/repo',
   description: 'This is just a test repo',
   starsCount: 1123,
+  language: 'sample-lang',
 }
 
 describe('useFavoriteRepos', () => {
